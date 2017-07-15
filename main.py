@@ -22,18 +22,31 @@ class Post(db.Model):
         self.body = body
         self.likes = 0
 
+@app.route('/login/signup')
+def signup():
 
+    return render_template("signup.html")
+
+@app.route("/login")
+def login():
+
+    return render_template('login.html')
 
 @app.route('/')
 def index():
-    return redirect('/blog')
+
+    return render_template('index.html')
 
 @app.route("/blog")
 def blog():
-    num = request.args.get('id')
-    if num:
+    postid = request.args.get('id')
+    userid = request.args.get('uid')
+    if postid:
         post = Post.query.get(num)
         return render_template('postit.html', post=post)
+    if userid:
+        #userposts = Post.query.filter_by(userid=userid)
+        return render_template('author.html')#, posts=userposts)
     else:
         posts = Post.query.all()
         return render_template('blog.html', title="Blog", posts=posts)  
