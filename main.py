@@ -4,10 +4,10 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://build-a-blog:@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://blogz:@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
-app.secret_key = "B5"
+app.secret_key = "C6"
 
 
 class Post(db.Model):
@@ -36,7 +36,7 @@ def blog():
         return render_template('postit.html', post=post)
     else:
         posts = Post.query.all()
-        return render_template('posts.html', title="Blog", posts=posts)  
+        return render_template('blog.html', title="Blog", posts=posts)  
  
 @app.route('/post_form', methods=["POST", "GET"])   
 def post_form():
@@ -51,7 +51,7 @@ def post_form():
         db.session.commit()
         return redirect("/post?id=" + str(new_post.id))
 
-    return render_template("blog.html", title="New Post")
+    return render_template("post_form.html", title="New Post")
 
 
 @app.route("/delete_post", methods=['POST', 'GET'])

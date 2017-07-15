@@ -1,27 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h3>New Post:<h3>
-<form method="post">
+        <h1>The Blog</h1>
+        
+        <hr />
+        <h3>POSTS:</h3>
+        {% if posts|length == 0 %}
+            <p>No Posts yet</p>
+        {% else %}
+            <ul>
+                {% for post in posts %}
+                <li>
+                    <a href="/blog?id={{post.id}}">{{post.title}}<a/>
+                </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
-    <label>
-        Title:
-        <input type ="text" name="title"/>
-    </label>
+        <hr/>
 
-    <label>
-        Body:
-        <textarea name="body"></textarea>
-    </label>
+        <h4>
+            <a href="/post_form">
+                make new post
+            </a>
+        </h4>
 
-    <input type="submit" value="Post"/>
-</form>
-
-<hr/>
-
-<h4>
-    <a href="/blog">
-        view blog
-    </a>
-</h4>
 {% endblock %}
