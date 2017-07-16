@@ -1,6 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-        <h1>author</h1>
-
+        {% if posts|length > 0 %}
+                <h3>{{posts[0].owner.username}}'s POSTS:</h3>
+        {% endif %}
+        {% if posts|length == 0 %}
+            <p>No Posts yet</p>
+        {% else %}
+            <ul>
+                {% for post in posts %}
+                <li>
+                    <a href="/blog?id={{post.id}}">{{post.title}}<a/>
+                    <p>{{post.body}}</p>
+                </li>
+                <hr/>
+                {% endfor %}
+            </ul>
+        {% endif %}
 {% endblock %}

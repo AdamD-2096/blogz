@@ -12,7 +12,10 @@
                 {% for post in posts %}
                 <li>
                     <a href="/blog?id={{post.id}}">{{post.title}}<a/>
+                    <p>{{post.body}}</p>
+                    <a href=/blog?uid={{post.owner_id}}>{{post.owner.username}}<a/>
                 </li>
+                <hr/>
                 {% endfor %}
             </ul>
         {% endif %}
