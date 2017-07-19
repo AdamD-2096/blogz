@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from hashfun import make_pw_hash, check_pw_hash
 import re
 
 app = Flask(__name__)
@@ -30,12 +31,12 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True)
     email = db.Column(db.String(120), unique=True)
-    password = db.Column(db.String(40))
+    password = db.Column(db.String(200))
     posts = db.relationship('Post', backref='owner')
 
     def __init__(self, username, email, password):
         self.email = email
-        self.password = password
+        self.password = make_pw_hash(password)
         self.username = username
 
 def validate(un, em, p, p2):
@@ -108,13 +109,13 @@ def login():
         ename = request.form['ename']
         password = request.form['password']
         user = User.query.filter_by(email=ename).first()
-        if user and user.password == password:
+        if user and check_pw_hash(password, user.password):
             session['user'] = ename
             flash("logged in", 'success')
             return redirect('/blog')
         else:
             user = User.query.filter_by(username=ename).first()
-            if user and user.password == password:
+            if user and check_pw_hash(password, user.password):
                 session['user'] = ename
                 flash("logged in", 'success')
                 return redirect('/blog')
