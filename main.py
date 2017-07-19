@@ -110,13 +110,15 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(email=ename).first()
         if user and check_pw_hash(password, user.password):
-            session['user'] = ename
+            session['user'] = User.username
+            session['email'] = User.email
             flash("logged in", 'success')
             return redirect('/blog')
         else:
             user = User.query.filter_by(username=ename).first()
             if user and check_pw_hash(password, user.password):
-                session['user'] = ename
+                session['user'] = User.username
+                session['email'] = User.email
                 flash("logged in", 'success')
                 return redirect('/blog')
             else:
@@ -149,8 +151,6 @@ def post_form():
         return redirect('/login')
     if request.method == "POST":
         owner = User.query.filter_by(username=session['user']).first()
-        if not owner:
-            owner = User.query.filter_by(email=session['user']).first()
         title = request.form["title"]
         body = request.form["body"]
         if body == "" or title == "":
@@ -177,6 +177,8 @@ def delete():
 def logout():
     if 'user' in session:
         del session['user']
+    if 'email' in session:
+        del session['email']
     return redirect('/')
 
 if __name__ == '__main__':
