@@ -94,7 +94,7 @@ def signup():
                     new_user = User(username, email, password)
                     db.session.add(new_user)
                     db.session.commit()
-                    session['user'] = username
+                    session['user'] = new_user.username
                     return redirect('/')
                 else:
                     flash('Cannot create (Email already in use)', 'error')
@@ -110,15 +110,13 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(email=ename).first()
         if user and check_pw_hash(password, user.password):
-            session['user'] = User.username
-            session['email'] = User.email
+            session['user'] = user.username
             flash("logged in", 'success')
             return redirect('/blog')
         else:
             user = User.query.filter_by(username=ename).first()
             if user and check_pw_hash(password, user.password):
-                session['user'] = User.username
-                session['email'] = User.email
+                session['user'] = user.username
                 flash("logged in", 'success')
                 return redirect('/blog')
             else:
@@ -128,8 +126,8 @@ def login():
 
 @app.route('/')
 def index():
-
-    return render_template('index.html')
+    users = User.query.all()
+    return render_template('index.html', users = users)
 
 @app.route("/blog")
 def blog():
@@ -177,8 +175,6 @@ def delete():
 def logout():
     if 'user' in session:
         del session['user']
-    if 'email' in session:
-        del session['email']
     return redirect('/')
 
 if __name__ == '__main__':
