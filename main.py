@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from hashfun import make_pw_hash, check_pw_hash
+from now import get_time
 import re
 
 app = Flask(__name__)
@@ -10,29 +11,43 @@ app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 app.secret_key = "C6"
 
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    liked =  db.Column(db.Boolean)
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+
+    def __init__(self, owner, owned, liked=False):
+        self.owner = owner
+        self.owned = owned
+        self.liked = liked
+
 
 class Post(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     body = db.Column(db.String(1000))
-    likes = db.Column(db.Integer)
+    time = db.Column(db.String(20))
+    likes = db.Column(db.Integer, default=0)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    likez = db.relationship('Like', backref='owned')
 
-    def __init__(self, title, body, owner):
+    def __init__(self, title, body, owner, time):
         self.title = title
         self.body = body
-        self.likes = 0
         self.owner = owner
+        self.time = time
 
 
 class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True)
-    email = db.Column(db.String(120), unique=True)
+    email = db.Column(db.String(120))
     password = db.Column(db.String(200))
     posts = db.relationship('Post', backref='owner')
+    likes = db.relationship('Like', backref='owner')
 
     def __init__(self, username, email, password):
         self.email = email
@@ -64,6 +79,29 @@ def validate(un, em, p, p2):
 
     return error
 
+@app.route('/like_post', methods=['POST'])
+def like_post():
+    post_id = int(request.form["post-id"])
+    user_id = int(request.form["user-id"])
+    owner = User.query.get(user_id)
+    owned = Post.query.get(post_id)
+    like = Like.query.filter_by(owned=owned, owner=owner).first()
+    if like:
+        if not like.liked:
+            like.liked = True
+            owned.likes += 1
+            db.session.commit()
+            
+        else:
+            like.liked = False
+            owned.likes = (Post.likes - 1)
+            db.session.commit()
+    else:
+        new_like = Like(owner, owned, True)
+        db.session.add(new_like)
+        Post.likes = Post.likes + 1
+        db.session.commit()
+    return redirect("/blog?id=" + str(post_id))
 
 @app.route('/login/signup', methods=['POST', 'GET'])
 def signup():
@@ -90,7 +128,7 @@ def signup():
             user = User.query.filter_by(username=username).first()
             if not user:
                 user = User.query.filter_by(email=email).first()
-                if not user:
+                if not user or email == "":
                     new_user = User(username, email, password)
                     db.session.add(new_user)
                     db.session.commit()
@@ -134,8 +172,11 @@ def blog():
     postid = request.args.get('id')
     userid = request.args.get('uid')
     if postid:
+        user = User.query.filter_by(username=session['user']).first()
         post = Post.query.get(postid)
-        return render_template('postit.html', post=post)
+        like = Like.query.filter_by(owned=post).all()
+        liked = Like.query.filter_by(owned=post, owner=user).first()
+        return render_template('postit.html', post=post, user=user, like=like, liked=liked)
     if userid:
         userposts = Post.query.filter_by(owner_id=userid).all()
         return render_template('author.html', posts=userposts)
@@ -154,7 +195,8 @@ def post_form():
         if body == "" or title == "":
             flash("please have content in both fields", "error")
             return redirect("/post_form")
-        new_post = Post(title, body, owner)
+        time = get_time()
+        new_post = Post(title, body, owner, time)
         db.session.add(new_post)
         db.session.commit()
         return redirect("/blog?id=" + str(new_post.id))
@@ -177,5 +219,10 @@ def logout():
         del session['user']
     return redirect('/')
 
+@app.route('/drop_create')
+def drop_create():
+    db.drop_all()
+    db.create_all()
+    return redirect('/')
 if __name__ == '__main__':
     app.run()
