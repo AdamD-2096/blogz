@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>{{post.title}}<h3>
+<p>{{post.body}}</p>
+<p class="time">{{post.time}}</p>
+<p>likes {{post.likes}}</p>
+
+<hr/>
+<h4>
+    <a href="/blog">
+        view blog
+    </a>
+</h4>
+<h4>
+    <a href="/post_form">
+        make new post
+    </a>
+</h4>
+{% endblock %}

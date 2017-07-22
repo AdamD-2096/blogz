@@ -16,11 +16,11 @@
     <form method="POST" action="/like_post">
         <input type="hidden" name="user-id" value="{{user.id}}"/>
         <input type="hidden" name="post-id" value="{{post.id}}"/>
-        {% if liked.liked == True %}
-            <input type="submit" value="UNLIKE"/>
-        {% else %}
-            <input type="submit" value="LIKE"/>
-        {% endif %}
+            {% if liked.liked == True %}
+                <input type="submit" value="UNLIKE"/>
+            {% else %}
+                <input type="submit" value="LIKE"/>
+            {% endif %}
     </form>
 {% endif %}
 <hr/>

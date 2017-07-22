@@ -172,8 +172,10 @@ def blog():
     postid = request.args.get('id')
     userid = request.args.get('uid')
     if postid:
-        user = User.query.filter_by(username=session['user']).first()
         post = Post.query.get(postid)
+        if 'user' not in session:
+            return render_template('postitbare.html', post=post)
+        user = User.query.filter_by(username=session['user']).first()
         like = Like.query.filter_by(owned=post).all()
         liked = Like.query.filter_by(owned=post, owner=user).first()
         return render_template('postit.html', post=post, user=user, like=like, liked=liked)
@@ -187,7 +189,8 @@ def blog():
 @app.route('/post_form', methods=["POST", "GET"])   
 def post_form():
     if 'user' not in session:
-        return redirect('/login')
+        flash("log in to create posts", 'error')
+        return redirect('/blog')
     if request.method == "POST":
         owner = User.query.filter_by(username=session['user']).first()
         title = request.form["title"]
