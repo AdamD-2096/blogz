@@ -221,6 +221,25 @@ def post_form():
 
     return render_template("post_form.html", title="New Post")
 
+@app.route('/post_form/edit', methods=['POST'])
+def edit():
+    postid = request.form.get("post-id", None)
+    edited = request.form.get("edited", None)
+    if postid:
+        post = Post.query.get(postid)
+        return render_template("edit_post.html", title="Edit Post", post=post)
+    elif edited:
+        title = request.form["title"]
+        body = request.form["body"]
+        post = Post.query.get(edited)
+        post.title = title
+        post.body = body
+        post.time = get_time()
+        db.session.commit()
+        return redirect("/blog?id=" + str(post.id))
+    else:
+        return redirect("/blog")
+
 
 @app.route("/delete_post", methods=['POST', 'GET'])
 def delete():

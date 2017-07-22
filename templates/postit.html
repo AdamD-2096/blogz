@@ -12,6 +12,11 @@
         <input type="hidden" name="post-id" value="{{post.id}}"/>
         <input type="submit" value="Delete Post"/>
     </form>
+    
+    <form method="POST" action="/post_form/edit">
+        <input type="hidden" name="post-id" value="{{post.id}}"/>
+        <input type="submit" value="Edit Post"/>
+    </form>
 {% else %}
     <form method="POST" action="/like_post">
         <input type="hidden" name="user-id" value="{{user.id}}"/>

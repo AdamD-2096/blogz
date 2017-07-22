@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h3>Edit Post:<h3>
+    <form method="post">
+
+        <label>
+            Title:
+            <input type ="text" name="title" value="{{post.title}}"/>
+        </label>
+
+        <label>
+            Body:
+            <textarea name="body">{{post.body}}</textarea>
+        </label>
+        <input type="hidden" name="edited" value="{{post.id}}"/>
+        <input type="submit" value="Edit"/>
+    </form>
+
+    <hr/>
+
+    <h4>
+        <a href="/blog">
+            view blog
+        </a>
+    </h4>
+{% endblock %}
