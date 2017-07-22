@@ -8,7 +8,7 @@
 <p>likes {{post.likes}}</p>
 
 {% if post.owner_id == user.id %}
-    <form method="POST" action="/delete_post">
+    <form method="POST" action="/blog">
         <input type="hidden" name="post-id" value="{{post.id}}"/>
         <input type="submit" value="Delete Post"/>
     </form>

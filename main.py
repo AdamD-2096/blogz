@@ -78,6 +78,17 @@ def validate(un, em, p, p2):
             error[5] = ""
 
     return error
+def body_title(title, body):
+    if body == "" or title == "":
+        flash("please have content in both fields", "error")
+    if len(title) > 100:
+        flash("title can olny be up to 100 characters", "error")
+    if len(body) > 1000:
+        flash("body can olny be up to 1000 characters", "error")
+    if len(title) > 100 or len(body) > 1000 or body == "" or title == "":
+        return False
+    else: 
+        return True
 
 @app.route('/like_post', methods=['POST'])
 def like_post():
@@ -167,8 +178,12 @@ def index():
     users = User.query.all()
     return render_template('index.html', users = users)
 
-@app.route("/blog")
+@app.route("/blog", methods=["POST", "GET"])
 def blog():
+    if request.method == "POST":
+        usure = request.form["post-id"]
+        post = Post.query.get(usure)
+        return render_template('usure.html', post=post)
     postid = request.args.get('id')
     userid = request.args.get('uid')
     if postid:
@@ -195,8 +210,8 @@ def post_form():
         owner = User.query.filter_by(username=session['user']).first()
         title = request.form["title"]
         body = request.form["body"]
-        if body == "" or title == "":
-            flash("please have content in both fields", "error")
+        valid = body_title(title, body)
+        if not valid:
             return redirect("/post_form")
         time = get_time()
         new_post = Post(title, body, owner, time)
