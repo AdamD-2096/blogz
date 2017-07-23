@@ -78,6 +78,7 @@ def validate(un, em, p, p2):
             error[5] = ""
 
     return error
+
 def body_title(title, body):
     if body == "" or title == "":
         flash("please have content in both fields", "error")
@@ -231,12 +232,15 @@ def edit():
     elif edited:
         title = request.form["title"]
         body = request.form["body"]
+        valid = body_title(title, body)
         post = Post.query.get(edited)
-        post.title = title
-        post.body = body
-        post.time = get_time()
-        db.session.commit()
-        return redirect("/blog?id=" + str(post.id))
+        if valid:
+            post.title = title
+            post.body = body
+            post.time = get_time()
+            db.session.commit()
+            return redirect("/blog?id=" + str(post.id))
+        return render_template("edit_post.html", title="Edit Post", post=post)
     else:
         return redirect("/blog")
 
@@ -258,8 +262,26 @@ def logout():
 
 @app.route('/drop_create')
 def drop_create():
-    db.drop_all()
-    db.create_all()
+    if 'user' in session:
+        if session["user"] == 'admin':
+            db.drop_all()
+            db.create_all()
     return redirect('/')
+
+@app.route('/admin')
+def admin():
+    username = 'admin'
+    admin = User.query.filter_by(username=username).first()
+    if not admin:
+        email = ""
+        password = 'admin'
+        admin = User(username, email, password)
+        db.session.add(admin)
+        db.session.commit()
+    return redirect('/login')
+
+
+
+
 if __name__ == '__main__':
     app.run()
