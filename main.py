@@ -106,12 +106,12 @@ def like_post():
             
         else:
             like.liked = False
-            owned.likes = (Post.likes - 1)
+            owned.likes = (owned.likes - 1)
             db.session.commit()
     else:
         new_like = Like(owner, owned, True)
         db.session.add(new_like)
-        Post.likes = Post.likes + 1
+        owned.likes += 1
         db.session.commit()
     return redirect("/blog?id=" + str(post_id))
 
