@@ -11,27 +11,22 @@
     </head>
 
     <body>
-        <nav>
-            <a href="/post_form">
-                make new post
-            </a> |
-            <a href="/blog">
-                view blog
-            </a> |
-            <a href="/login">
-                login
-            </a> |
-            <a href="/login/signup">
-                signup
-            </a> |
-            <a href="/">
-                user page
-            </a> |
-            <a href="/logout">
-                logout
-            </a>
-
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/blog">BLOGZ</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li class="{{a0}}"><a href="/">user page</a></li>
+                    <li class="{{a1}}"><a href="/blog">view blog</a></li>
+                    <li class="{{a2}}"><a href="/post_form">make new post</a></li>
+                    <li class="{{a3}}"><a href="/login">login</a></li>
+                    <li class="{{a4}}"><a href="/login/signup">signup</a></li>
+                    <li class="{{a5}}"><a href="/logout">logout</a></li>
+                </ul>
+            </div>
         </nav>
+
         {% with messages = get_flashed_messages(with_categories=True) %}
             <ul>
             {% for category,message in messages %}
@@ -43,7 +38,7 @@
 
         {% block content %}
         {% endblock %}
-        
+
         <!-- jQuery library -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 

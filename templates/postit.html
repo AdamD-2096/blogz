@@ -10,21 +10,21 @@
 {% if post.owner_id == user.id %}
     <form method="POST" action="/blog">
         <input type="hidden" name="post-id" value="{{post.id}}"/>
-        <input type="submit" value="Delete Post"/>
+        <input class="btn-warning" type="submit" value="Delete Post"/>
     </form>
     
     <form method="POST" action="/post_form/edit">
         <input type="hidden" name="post-id" value="{{post.id}}"/>
-        <input type="submit" value="Edit Post"/>
+        <input class="btn-info" type="submit" value="Edit Post"/>
     </form>
 {% else %}
     <form method="POST" action="/like_post">
         <input type="hidden" name="user-id" value="{{user.id}}"/>
         <input type="hidden" name="post-id" value="{{post.id}}"/>
             {% if liked.liked == True %}
-                <input type="submit" value="UNLIKE"/>
+                <input class="btn-default" type="submit" value="UNLIKE"/>
             {% else %}
-                <input type="submit" value="LIKE"/>
+                <input class="btn-primary" type="submit" value="LIKE"/>
             {% endif %}
     </form>
 {% endif %}

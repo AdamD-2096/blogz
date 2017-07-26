@@ -1,14 +1,16 @@
 body{
-    background-color: #338
+    background-color: #335;
+    color: #ccf;
 }
 .error{
     color: #b00;
 }
 a{
-    color: #45d
+    color: #99f;
 }
 a:hover{
-    text-shadow: 0.15em 0.15em #115
+    color: #99f;
+    text-shadow: 0.15em 0.15em #66d;
 }
 textarea {
     margin: 10px 0;
@@ -21,5 +23,5 @@ form {
     font: 16px sans-serif;
 }
 .time{
-    font-size: 0.65em
+    font-size: 0.65em;
 }

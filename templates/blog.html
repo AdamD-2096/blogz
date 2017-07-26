@@ -15,13 +15,13 @@
                     <p>{{post.body}}</p>
                     <ul>
                         <li>
-                            <a href=/blog?uid={{post.owner_id}}>{{post.owner.username}}</a>
+                            <p>likes {{post.likes}}</p>
                         </li>
                         <li>
                             <p class="time">{{post.time}}</p>
                         </li>
                         <li>
-                            <p>likes {{post.likes}}</p>
+                            <p>Written By: <a href=/blog?uid={{post.owner_id}}>{{post.owner.username}}</a></p>
                         </li>
                     </ul>
                 </li>
@@ -39,3 +39,4 @@
         </h4>
 
 {% endblock %}
+
