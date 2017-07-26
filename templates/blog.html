@@ -11,12 +11,16 @@
             <ul>
                 {% for post in posts %}
                 <li>
-                    <a href="/blog?id={{post.id}}">{{post.title}}<a/>
+                    <a href="/blog?id={{post.id}}">{{post.title}}</a>
                     <p>{{post.body}}</p>
                     <ul>
                         <li>
-                            <a href=/blog?uid={{post.owner_id}}>{{post.owner.username}}<a/>
+                            <a href=/blog?uid={{post.owner_id}}>{{post.owner.username}}</a>
+                        </li>
+                        <li>
                             <p class="time">{{post.time}}</p>
+                        </li>
+                        <li>
                             <p>likes {{post.likes}}</p>
                         </li>
                     </ul>
